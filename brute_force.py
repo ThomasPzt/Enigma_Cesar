@@ -4,7 +4,7 @@ def decrypter_message_chiffre(message_chiffre, justesseLettresFrancais, justesse
         for lettre in phrase:
             if lettre == ' ' or not lettre.isalpha():
                 continue  # Ignorer les espaces et la ponctuation
-            indice_lettre = ord(lettre.upper()) - ord('A')
+            indice_lettre = ord(lettre) - ord('a')
             somme_justesse += justesseLettres[(indice_lettre - decalage) % 26]
         return somme_justesse
 
