@@ -12,15 +12,26 @@ justesseLettresAnglais = [0.0808, 0.0167, 0.0318, 0.0399, 0.1256, 0.0217, 0.0180
 
 ## FONCTIONS DE BRUTE FORCE
 def justesse(phrase, justesseLettres, decalage):
+    # Initialise la somme de la justesse
     somme_justesse = 0
+
+    # Parcourt chaque lettre dans la phrase
     for lettre in phrase:
+        # Ignore les espaces et la ponctuation
         if lettre == ' ' or not lettre.isalpha():
-            continue  # Ignorer les espaces et la ponctuation
+            continue
+
+        # Calcule l'indice de la lettre dans l'alphabet
         indice_lettre = ord(lettre) - ord('a')
+
+        # Ajoute la justesse de la lettre décalée à la somme
         somme_justesse += justesseLettres[(indice_lettre - decalage) % 26]
+
+    # Retourne la somme de la justesse pour la phrase donnée
     return somme_justesse
 
 
+# Pour récuperer chaque clef individuellement on sépare le texte en trois chaines distinctes.
 def diviser_avec_roulement(chaine):
     chaine1 = ""
     chaine2 = ""
@@ -38,42 +49,64 @@ def diviser_avec_roulement(chaine):
 
 
 def brute_force(message_chiffre, justesseLettresFrancais, justesseLettresAnglais):
+    # Initialise les variables pour stocker le meilleur décalage et la meilleure justesse
     meilleur_decalage_francais = 0
     meilleure_justesse_francais = 0
 
     meilleur_decalage_anglais = 0
     meilleure_justesse_anglais = 0
 
+    # Parcourt tous les décalages possibles (de 0 à 25 inclus)
     for decalage in range(26):
+        # Calcule la justesse actuelle pour le français en utilisant le décalage courant
         justesse_actuelle_francais = justesse(message_chiffre, justesseLettresFrancais, decalage)
+
+        # Met à jour le meilleur décalage et la meilleure justesse pour le français si nécessaire
         if justesse_actuelle_francais > meilleure_justesse_francais:
             meilleure_justesse_francais = justesse_actuelle_francais
             meilleur_decalage_francais = decalage
 
+        # Calcule la justesse actuelle pour l'anglais en utilisant le décalage courant
         justesse_actuelle_anglais = justesse(message_chiffre, justesseLettresAnglais, decalage)
+
+        # Met à jour le meilleur décalage et la meilleure justesse pour l'anglais si nécessaire
         if justesse_actuelle_anglais > meilleure_justesse_anglais:
             meilleure_justesse_anglais = justesse_actuelle_anglais
             meilleur_decalage_anglais = decalage
 
+    # Compare les meilleures justesses et détermine le meilleur décalage global
     if meilleure_justesse_francais > meilleure_justesse_anglais:
         meilleur_decalage = meilleur_decalage_francais
     else:
         meilleur_decalage = meilleur_decalage_anglais
 
+    # Retourne le meilleur décalage trouvé
     return meilleur_decalage
 
 
 ## FONCTIONS DE CESAR SIMPLE
 def chiffrement_cesar(texte, cle):
+    # Initialise l'alphabet utilisé pour le chiffrement César
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
+
+    # Initialise une chaîne vide pour stocker le résultat du chiffrement
     resultat = ''
+
+    # Parcourt chaque caractère dans le texte d'origine
     for char in texte:
+        # Vérifie si le caractère est une lettre de l'alphabet
         if char.isalpha():
+            # Calcule l'indice du caractère chiffré en fonction de la clé
             index = (ord(char) - ord('a') + cle) % 26
+            # Obtient le caractère chiffré à partir de l'alphabet
             char_chiffre = alphabet[index]
+            # Ajoute le caractère chiffré au résultat
             resultat += char_chiffre
         else:
+            # Si le caractère n'est pas une lettre, le laisse inchangé
             resultat += char
+
+    # Retourne le texte chiffré résultant
     return resultat
 
 
@@ -101,17 +134,32 @@ def chiffrement_dechiffrement_fichier(chemin_fichier, cle, chiffrement=True):
 
 ## FONCTIONS DE CESAR-ENIGMA
 def enigma_chiffrement_cesar(texte, cle_1, cle_2, cle_3, chiffrement=True):
+    # Initialise l'alphabet utilisé pour le chiffrement César
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
+
+    # Initialise une chaîne vide pour stocker le résultat du chiffrement
     resultat = ''
 
+    # Parcourt chaque caractère dans le texte d'origine avec son index
     for i, char in enumerate(texte):
+        # Vérifie si le caractère est une lettre de l'alphabet
         if char.isalpha():
+            # Calcule la clé pour ce caractère en utilisant les trois clés et l'index
             cle = (cle_1, cle_2, cle_3)[i % 3] * (-1 if not chiffrement else 1)
+
+            # Convertit le caractère en minuscule
             char_minuscule = char.lower()
+
+            # Calcule l'indice du caractère chiffré en fonction de la clé
             char_chiffre = alphabet[(ord(char_minuscule) - ord('a') + cle) % 26]
+
+            # Ajoute le caractère chiffré au résultat
             resultat += char_chiffre
         else:
+            # Si le caractère n'est pas une lettre, le laisse inchangé
             resultat += char
+
+    # Retourne le texte chiffré ou déchiffré résultant
     return resultat
 
 
